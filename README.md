@@ -22,3 +22,45 @@ Tiers new leads into VIP/Standard/Budget email sequences and auto-moves cold sub
 - [Setup](#setup)
 - [Repository Structure](#repository-structure)
 - [Disclaimer](#disclaimer)
+
+## Problem
+
+Every lead gets the same generic email cadence regardless of how valuable they actually are.
+
+## Solution
+
+**Trigger:** Webhook (new CRM lead: company_size, budget, industry, email, name)
+
+Tiers new leads into VIP/Standard/Budget email sequences and auto-moves cold subscribers to re-engagement. The workflow runs as a single n8n automation with 12 functional nodes (trigger, logic, and integration steps combined).
+
+### Key Features
+
+- Rule-based 3-tier segmentation
+- Frequency-matched sequence enrollment
+- Automatic re-engagement failover
+
+## Architecture
+
+```
+CRM
+    │
+    ▼
+n8n Ingestion & Routing
+    │
+    ▼
+Business Logic Processing
+    │
+    ├── Firmographic Tier Segmentation
+    ├── Sequence Enrollment
+    ├── Engagement Tracking
+    └── Re-engagement Failover
+    │
+    ▼
+Structured Result
+    │
+    ▼
+Delivery & Integrations
+    │
+    ├── Email Service
+    └── Analytics
+```
