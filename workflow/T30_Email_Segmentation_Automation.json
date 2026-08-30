@@ -1,0 +1,555 @@
+{
+  "name": "T30_Email_Segmentation_Automation",
+  "nodes": [
+    {
+      "id": "7f7bef81-2a0a-4a64-997b-1a46dfa10ee9",
+      "name": "Note_71984b5d",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        50,
+        50
+      ],
+      "parameters": {
+        "content": "Created by Oyekola Ololade\nhttps://www.linkedin.com/in/ololade-oyekola-5b1797397/\nn8n Template Library - Gumroad",
+        "width": 300,
+        "height": 100,
+        "color": 4
+      }
+    },
+    {
+      "id": "3a2ffade-98db-4582-85be-022f3825a41e",
+      "name": "New Lead CRM Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "d7bdf5ad-164f-4cb9-828f-1d8687056af4",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "email-segmentation",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "e2f9599d-870a-4f2f-9864-816a644019be",
+      "name": "Extract Lead Props",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        450,
+        300
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2b6e6a3d-62c0-4617-9400-65bf4054bc83",
+              "name": "company_size",
+              "value": "={{ $json.body.company_size }}",
+              "type": "string"
+            },
+            {
+              "id": "8490880f-6ee1-4b35-8de8-85c070283ad9",
+              "name": "budget",
+              "value": "={{ $json.body.budget }}",
+              "type": "string"
+            },
+            {
+              "id": "96687036-a245-4ea4-a615-1cf795d6bf52",
+              "name": "industry",
+              "value": "={{ $json.body.industry }}",
+              "type": "string"
+            },
+            {
+              "id": "dc32c370-1edb-4a54-9746-9b2b8a5bc194",
+              "name": "email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "9361db45-e75a-4986-9da4-76f282723ada",
+              "name": "name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "9a9370a3-2e58-46e3-93b5-7fc1c502daa7",
+      "name": "Segment Lead",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        650,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "909ef3e9-6ed7-4c14-9a7d-240ca2778da8",
+              "leftValue": "={{ parseInt($json.company_size) >= 200 && parseInt($json.budget.replace(/[^0-9]/g,'')) >= 50000 && $json.industry == 'SaaS' }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "356119bd-dc1e-45b4-b7e2-07b99bb8c985",
+      "name": "VIP Segment",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        850,
+        200
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f5235c52-0a08-46c3-b897-f5e1f91cb308",
+              "name": "tier",
+              "value": "VIP",
+              "type": "string"
+            },
+            {
+              "id": "a66f262d-27cb-46c5-b89a-4a841514454c",
+              "name": "frequency",
+              "value": "2x/week",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "8391420a-1f2f-4ec2-8b37-066391cbfb49",
+      "name": "Standard Segment",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        850,
+        300
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f402a20d-d302-49aa-b9c0-1cc348283874",
+              "name": "tier",
+              "value": "Standard",
+              "type": "string"
+            },
+            {
+              "id": "0b9a3afd-51e0-49ac-9355-9932ba24e801",
+              "name": "frequency",
+              "value": "1x/week",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "02e08b8c-4286-45f3-91ae-ad6afffc260a",
+      "name": "Budget Segment",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        850,
+        400
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "33caa844-66d8-4b2b-a4bf-789ac61ad980",
+              "name": "tier",
+              "value": "Budget",
+              "type": "string"
+            },
+            {
+              "id": "ca6c36b5-8008-477c-9c59-7469ddfb29e3",
+              "name": "frequency",
+              "value": "1x/month",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "1bc3eaa3-699e-45cb-807f-ef7dda31c3af",
+      "name": "Enroll in Sequence",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1050,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_EMAIL_SERVICE_API_URL/enroll",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_EMAIL_API_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {},
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "tier",
+              "value": "={{ $json.tier }}"
+            },
+            {
+              "name": "frequency",
+              "value": "={{ $json.frequency }}"
+            },
+            {
+              "name": "sequence",
+              "value": "=\"{{ $json.tier }}_sequence\""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "838e2550-460a-492c-aa9f-9420748d231b",
+      "name": "Track Engagement",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1250,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_ANALYTICS_URL/track",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": false,
+        "headerParameters": {
+          "parameters": []
+        },
+        "options": {},
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "event",
+              "value": "sequence_enrolled"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "tier",
+              "value": "={{ $json.tier }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "4b666f14-313f-4d7c-b4a5-9975222c4294",
+      "name": "Re-engagement Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1450,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "23661c3d-3ac2-4508-b2cd-fdf4fb5c95f9",
+              "leftValue": "={{ $json.opens || 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "29530440-258e-4dc8-8398-21a1c7d1ffa3",
+      "name": "Move to Re-engagement",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1650,
+        250
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_EMAIL_SERVICE_API_URL/move",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_EMAIL_API_KEY"
+            }
+          ]
+        },
+        "options": {},
+        "sendBody": true,
+        "contentType": "json",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "name": "from_sequence",
+              "value": "={{ $json.tier }}_sequence"
+            },
+            {
+              "name": "to_sequence",
+              "value": "re_engagement"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "e7d22087-977e-4965-bda1-118d3aee99c1",
+      "name": "Keep Active",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1650,
+        350
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4e8c95a8-50b7-4627-9809-912d2c03f073",
+              "name": "status",
+              "value": "active",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e3dca949-72e0-4871-b773-a9b7ce416d74",
+      "name": "End",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1850,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "New Lead CRM Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract Lead Props",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Lead Props": {
+      "main": [
+        [
+          {
+            "node": "Segment Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Segment Lead": {
+      "main": [
+        [
+          {
+            "node": "VIP Segment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Standard Segment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Budget Segment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VIP Segment": {
+      "main": [
+        [
+          {
+            "node": "Enroll in Sequence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Standard Segment": {
+      "main": [
+        [
+          {
+            "node": "Enroll in Sequence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Budget Segment": {
+      "main": [
+        [
+          {
+            "node": "Enroll in Sequence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enroll in Sequence": {
+      "main": [
+        [
+          {
+            "node": "Track Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Engagement": {
+      "main": [
+        [
+          {
+            "node": "Re-engagement Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Re-engagement Check": {
+      "main": [
+        [
+          {
+            "node": "Move to Re-engagement",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Keep Active",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Move to Re-engagement": {
+      "main": [
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keep Active": {
+      "main": [
+        [
+          {
+            "node": "End",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    "Gumroad",
+    "Production",
+    "Template",
+    "Oyekola Ololade"
+  ],
+  "pinData": {},
+  "staticData": null
+}
