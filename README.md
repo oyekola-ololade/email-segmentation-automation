@@ -35,8 +35,22 @@ Tiers new leads into VIP/Standard/Budget email sequences and auto-moves cold sub
 
 ## Architecture
 
-Open the [visual project page](./index.html#architecture) for the flow derived from the sanitized export.
+The diagram below represents the sanitized template flow. External services, credentials, and environment-specific identifiers must be configured before execution.
 
+```mermaid
+flowchart TD
+    A["CRM lead webhook"] --> B["Extract and normalize lead fields"]
+    B --> C{"Firmographic tier"}
+    C -->|VIP| D["VIP email sequence"]
+    C -->|Standard| E["Standard email sequence"]
+    C -->|Budget| F["Budget email sequence"]
+    D --> G["Track engagement"]
+    E --> G
+    F --> G
+    G --> H{"Opened?"}
+    H -->|No| I["Re-engagement sequence"]
+    H -->|Yes| J["Continue selected sequence"]
+```
 
 ## Workflow
 
